@@ -36,6 +36,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.eclipse.jetty.client.ContentResponse;
 import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.openhab.binding.zigbee.ZigBeeBindingConstants;
 import org.openhab.core.OpenHAB;
 import org.slf4j.Logger;
@@ -89,7 +90,12 @@ public class GithubLibraryReader {
         }
         this.repositoryAddress = localAddress + "/";
 
+        SslContextFactory.Client sslContext = new SslContextFactory.Client(true);
+        sslContext.setValidateCerts(false);
+        sslContext.setValidatePeerCerts(false);
+        sslContext.setEndpointIdentificationAlgorithm(null);
         this.httpClient = new HttpClient();
+        this.httpClient.setSslContextFactory(sslContext);
         this.httpClient.setExecutor(executor);
 
         try {
@@ -336,5 +342,4 @@ public class GithubLibraryReader {
 
         return builder.toString();
     }
-
 }
